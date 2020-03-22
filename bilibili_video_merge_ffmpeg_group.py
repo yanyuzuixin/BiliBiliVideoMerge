@@ -7,8 +7,12 @@ import natsort
 import subprocess
 from moviepy.editor import VideoFileClip, concatenate_videoclips
 
-source_path = r"E:/BiliBiliDownload/27016855"
-
+source_paths = [
+    r"E:/BiliBiliDownload/49361421",
+    r"E:/BiliBiliDownload/89151329",
+    r"E:/BiliBiliDownload/91575042",
+    r"E:/BiliBiliDownload/92833829",
+]
 # 在路径下找到指定后缀名的文件(默认文件唯一)，返回文件路径
 def _find_file(path, suffix):
     sub_items = os.listdir(path)
@@ -59,10 +63,10 @@ def merge_part_video(path,output_path):
     merge_video_name = f'P{part_no}_{part_name}(AV{aid})'
     part_videos = list()
     for sub_item in os.listdir(path):
-        if os.path.splitext(sub_item)[1] == '.flv':
+        if os.path.splitext(sub_item)[1] == '.flv' or os.path.splitext(sub_item)[1] == '.mp4':
             part_videos.append(f'{path}/{sub_item}')
     if total_parts != len(part_videos):
-        print('video num error')
+        print(f'video num error {total_parts} {len(part_videos)}')
         exit('video num error')
     part_videos = natsort.natsorted(part_videos)
     # part_videos.sort()
@@ -90,10 +94,11 @@ def merge_part_video(path,output_path):
 
 
 if __name__ == "__main__":
-    root_folder_path = create_root_folder(source_path)
-    for sub_item in natsort.natsorted(os.listdir(source_path)):
-        path = f'{source_path}/{sub_item}'
-        if os.path.isdir(path):
-            merge_part_video(path, root_folder_path)
-    print("Merge Finished")
+    for source_path in source_paths:
+        root_folder_path = create_root_folder(source_path)
+        for sub_item in natsort.natsorted(os.listdir(source_path)):
+            path = f'{source_path}/{sub_item}'
+            if os.path.isdir(path):
+                merge_part_video(path, root_folder_path)
+        print("Merge Finished")
     pass
